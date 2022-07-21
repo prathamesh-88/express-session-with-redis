@@ -22,35 +22,9 @@ let RedisStore = require('connect-redis')(session);
 // Initialize Express App
 const app = express();
 
-//Need this part in ../database/redis-client.js
-const redisClient = createClient({
-    legacyMode: true,
-    host: REDIS_HOST,
-    port: REDIS_PORT
-})
-
-redisClient.on('error', function (err) {
-    console.log('Could not establish a connection with redis. ' + err);
-});
-
-redisClient.on('connect', function (err) {
-    console.log('Connected to redis successfully');
-});
-
-redisClient.connect(); //This is async, so we need to await it... Find a way to do that
-
-//Until here
-
 //Middleware declaration
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    store : new RedisStore({ client: redisClient }),
-    secret: SESSION_SECRET,
-    resave: false,
-    // cookie: { maxAge: 1000 * 60 * 60 * 24 },
-    saveUninitialized: false
-}))
 
 
 if (NODE_ENV === 'development') {
@@ -68,7 +42,24 @@ app.post('/signup', (req, res) => add_user(req,res));
 app.post('/login', redirect_authenticated, (req, res)  => login(req,res));
 app.post('/logout', (req, res) => { logout(req,res); });
 
+const async_preprocessors = async () => {
+    const redisClient = await getClient();
+    app.use(session({
+        store : new RedisStore({ client: redisClient }),
+        secret: SESSION_SECRET,
+        resave: false,
+        // cookie: { maxAge: 1000 * 60 * 60 * 24 },
+        saveUninitialized: false
+    }))
+}
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-})
+async_preprocessors()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        })
+    })
+    .catch((err) => {
+        console.log("Error in async handlers " + err);
+        process.exit(-1);
+    })
