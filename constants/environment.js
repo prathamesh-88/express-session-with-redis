@@ -11,6 +11,13 @@ if (NODE_ENV === 'development') {
 module.exports = {
     LOG_DESTINATION,
     NODE_ENV,
+    // Redis Client Configuration
+    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_PORT: process.env.REDIS_PORT || 6379,
+    //MongoDB Client Configuration
     MONGODB_URI : process.env.MONGODB_URI,
-    PORT        : process.env.PORT || 3000
+    //Server port
+    PORT        : process.env.PORT || 3000,
+    //Session Secret
+    SESSION_SECRET: process.env.SESSION_SECRET
 }
