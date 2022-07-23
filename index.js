@@ -17,12 +17,22 @@ const {authentication_required, redirect_authenticated} = require('./middleware/
 const {getClient} = require('./database/redis-client');
 const {createClient} = require('redis');
 let RedisStore = require('connect-redis')(session);
-// const redisClient = getClient();
+
 
 // Initialize Express App
 const app = express();
 
+(async  () =>{
 //Middleware declaration
+let redisClient = await getClient();
+
+app.use(session({
+    store : new RedisStore({ client: redisClient }),
+    secret: SESSION_SECRET,
+    resave: false,
+    cookie: { maxAge: 1000 * 60 * 60 * 24 },
+    saveUninitialized: false
+}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,24 +52,9 @@ app.post('/signup', (req, res) => add_user(req,res));
 app.post('/login', redirect_authenticated, (req, res)  => login(req,res));
 app.post('/logout', (req, res) => { logout(req,res); });
 
-const async_preprocessors = async () => {
-    const redisClient = await getClient();
-    app.use(session({
-        store : new RedisStore({ client: redisClient }),
-        secret: SESSION_SECRET,
-        resave: false,
-        // cookie: { maxAge: 1000 * 60 * 60 * 24 },
-        saveUninitialized: false
-    }))
-}
 
-async_preprocessors()
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
-        })
-    })
-    .catch((err) => {
-        console.log("Error in async handlers " + err);
-        process.exit(-1);
-    })
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+})();

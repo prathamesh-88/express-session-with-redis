@@ -3,14 +3,12 @@ const {createClient} = require('redis');
 const {REDIS_HOST, REDIS_PORT} = require('../constants/environment');
 
 const getClient = async () => {
-        //Configure redis client
+    //Configure redis client
     const redisClient = createClient({
-        // legacyMode: true,
-        socket: {
+            legacyMode: true,
             host: REDIS_HOST,
             port: REDIS_PORT
-        }
-    })
+    });
 
     redisClient.on('error', function (err) {
         console.log('Could not establish a connection with redis. ' + err);
@@ -21,10 +19,7 @@ const getClient = async () => {
     });
 
     await redisClient.connect();
-
-    console.log(await redisClient.GET("server:test"))
     return redisClient;
 }
-
 
 module.exports = {getClient};
