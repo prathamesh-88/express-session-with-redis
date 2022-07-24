@@ -1,4 +1,4 @@
-# ExpressJS  Authentication System with Session Management using  Express-Session.
+# ExpressJS  Authentication System with Session Management using  Express-Session and Redis for storing session details.
 
 ### An ExpressJS API Gateway that takes care of the following:
 
@@ -13,16 +13,18 @@
 - NodeJS >= 16.13.x
 - NPM >= 8.13.x
 - MongoDB URI. [Click here](https://www.mongodb.com/docs/guides/atlas/connection-string/) for the instruction to setup a free online MongoDB Atlas account. You can use local MongoDB as well.
+- Redis Server.
 
 ### Setup
-1. Browse to the directory `express-session-authentication` and open the `.env` file in any text editor. Make the following changes. Replace `<Paste your MongoDB URI>` with MongoDB URI 
+1. Browse to the directory `express-session-with-redis` and open the `.env` file in any text editor. Make the following changes. Replace `<Paste your MongoDB URI>` with MongoDB URI 
 
 > MONGODB_URI=\<Paste your MongoDB URI here> 
 
 2. In the same `.env` file change the `SESSION_SECRET`. This key is used for sign your session cookies which enables it to check if the cookie has been altered. Set one similar to the sample already provided. 
-3. Open command line (Cmd/Powershell/Terminal).
-4. Navigate to your current workspace. i.e. express-session-authentication folder.
-5. Enter the following commands:
+3. Add `REDIS_HOST` to the `.env` file or set as environment variable if it is anything other than localhost.
+4. Open command line (Cmd/Powershell/Terminal).
+5. Navigate to your current workspace. i.e. express-session-with-redis folder.
+6. Enter the following commands:
 > npm install
 > npm start
 6. Now you have an ExpressJS application running at port 3000 by default unless you have specified any other port in the `.env` file.
@@ -66,8 +68,6 @@
 ### Middleware
 
 Certain middleware functions are provided for managing sessions and routes better. Can be found in the `middleware/authentication.js` file.
-
-
 
 #### Postman Collection
 

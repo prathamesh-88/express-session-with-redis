@@ -12,7 +12,7 @@ module.exports = {
     LOG_DESTINATION,
     NODE_ENV,
     // Redis Client Configuration
-    REDIS_HOST: process.env.REDIS_HOST,
+    REDIS_HOST: process.env.REDIS_HOST || 'localhost',
     REDIS_PORT: process.env.REDIS_PORT || 6379,
     //MongoDB Client Configuration
     MONGODB_URI : process.env.MONGODB_URI,
