@@ -15,7 +15,6 @@ const {authentication_required, redirect_authenticated} = require('./middleware/
 
 //Redis Client Configuration
 const {getClient} = require('./database/redis-client');
-const {createClient} = require('redis');
 const RedisStore = require('connect-redis')(session);
 
 
