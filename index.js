@@ -16,7 +16,7 @@ const {authentication_required, redirect_authenticated} = require('./middleware/
 //Redis Client Configuration
 const {getClient} = require('./database/redis-client');
 const {createClient} = require('redis');
-let RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis')(session);
 
 
 // Initialize Express App
@@ -24,8 +24,7 @@ const app = express();
 
 (async  () =>{
 //Middleware declaration
-let redisClient = await getClient();
-
+const redisClient = await getClient();
 app.use(session({
     store : new RedisStore({ client: redisClient }),
     secret: SESSION_SECRET,

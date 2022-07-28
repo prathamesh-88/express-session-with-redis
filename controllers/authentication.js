@@ -12,6 +12,11 @@ const {verify_user_details} = require('../utility/verify.js')
 //Global constants
 const {SUCCESS, FAILED} = require('../constants/global.js');
 
+
+// Schema
+const User = require('../schema/User.js');
+const { error } = require('console');
+
 // Check if user already exists
 async function user_exist(email){
     let result = await find_one_entry('template', 'users', {email: email});
@@ -54,11 +59,25 @@ function user_process(user){
 
 // Controller for /signup
 async function add_user(req, res){
-    let user = {
-        fname: req.body.fname,
-        lname: req.body.lname,
-        email: req.body.email,
-        password: req.body.password
+    let user = {};
+    try{
+        for (i in User.required){
+            if (!req.body[i]){
+                throw 'Missing required field';
+            }
+            user[i] = req.body[i];
+        }
+        for (i in User.optional){
+            if (req.body[i]){
+                user[i] = req.body[i];
+            }
+        }
+        console.log(user)
+    }catch (e){
+        return res.send({
+            status: FAILED,
+            error: e
+        });
     }
     let results;
     let is_existing_user = await user_exist(user.email);
